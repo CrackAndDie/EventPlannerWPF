@@ -7,10 +7,7 @@ namespace EventPlanner.ViewModels
     {
         public MainWindowViewModel()
         {
-            CurrentView = new LoginView()
-            {
-                DataContext = new LoginViewModel()
-            };
+            CurrentView = new LoginView();
         }
 
         public void ChangeView(UserControl view)

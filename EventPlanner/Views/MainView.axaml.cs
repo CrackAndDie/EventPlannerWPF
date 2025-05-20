@@ -5,11 +5,11 @@ using EventPlanner.ViewModels;
 
 namespace EventPlanner;
 
-public partial class LoginView : UserControl
+public partial class MainView : UserControl
 {
-    public LoginView()
+    public MainView()
     {
         InitializeComponent();
-        DataContext = new LoginViewModel();
+        DataContext = new MainViewModel();
     }
 }

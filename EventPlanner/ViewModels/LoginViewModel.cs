@@ -25,7 +25,7 @@ namespace EventPlanner.ViewModels
             IsErrorTextVisible = false;
 
             App.CurrentUser = theUser;
-            //App.CurrentWindowViewModel.ChangeView();
+            App.CurrentWindowViewModel.ChangeView(new MainView());
         }
 
         [Reactive]
