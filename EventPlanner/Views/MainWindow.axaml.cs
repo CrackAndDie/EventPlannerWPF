@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using EventPlanner.ViewModels;
 
 namespace EventPlanner.Views
 {
@@ -7,6 +8,8 @@ namespace EventPlanner.Views
         public MainWindow()
         {
             InitializeComponent();
+            App.CurrentWindowViewModel = new MainWindowViewModel();
+            DataContext = App.CurrentWindowViewModel;
         }
     }
 }

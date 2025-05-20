@@ -1,5 +1,8 @@
-﻿namespace EventPlanner.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EventPlanner.Entities
 {
+    [Table("TaskState")]
     public class TaskState
     {
         public int Id { get; set; }

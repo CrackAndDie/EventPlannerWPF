@@ -20,7 +20,7 @@ namespace EventPlanner.Managers
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=event_planner;Username=event_planner;Password=qwerty");
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=event_planner;Username=postgres;Password=anime322");
         }
     }
 }

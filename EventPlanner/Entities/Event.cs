@@ -1,7 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventPlanner.Entities
 {
+    [Table("Event")]
     public class Event
     {
         public int Id { get; set; }
