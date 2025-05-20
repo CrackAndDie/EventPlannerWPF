@@ -50,9 +50,11 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-	</ItemGroup>
+  <ItemGroup>
+	  <PackageReference Include="Npgsql" Version="8.0.7" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.32" />
+	  
+  </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -72,6 +74,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Event.cs" />
+    <Compile Include="Entities\EventTask.cs" />
+    <Compile Include="Entities\Organization.cs" />
+    <Compile Include="Entities\Role.cs" />
+    <Compile Include="Entities\TaskState.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserEventTask.cs" />
+    <Compile Include="Managers\DbContextManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -97,5 +107,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
