@@ -114,6 +114,11 @@ namespace EventPlanner.ViewModels
 
         }
 
+        public void AddUserCallback(UserDTO user)
+        {
+
+        }
+
         public void UpdateUsers()
         {
             var eventTaskUsers = App.DbContext.Users.ToList();

@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="EventPlanner.AllUsersView">
+	<Grid RowDefinitions="Auto,*,Auto">
+		<Button Content="Добавить пользователя"
+				Command="{Binding AddUserCommand}"/>
+		<ItemsControl ItemsSource="{Binding AllUsers}"
+					  Grid.Row="1">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel />
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Button Height="50"
+							Margin="5"
+							HorizontalAlignment="Stretch"
+							Command="{Binding DataContext.SelectUserCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+							CommandParameter="{Binding }">
+						<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*"
+							  VerticalAlignment="Center">
+							<TextBlock Text="ФИО: "
+									   Margin="5,0,0,0"/>
+							<TextBlock Text="{Binding FullName}"
+									   Grid.Column="1"
+									   Margin="3,0,5,0"/>
+							<TextBlock Text="Роль: "
+									   Grid.Column="2"
+									   Margin="0,0,0,5"/>
+							<TextBlock Text="{Binding Role}"
+									   Grid.Column="3"
+									   Margin="3,0,5,0"/>
+
+							<Button Content="Удалить"
+									HorizontalAlignment="Right"
+									Grid.Column="4"
+									IsVisible="{Binding DataContext.IsRemoveEnabled, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+									Command="{Binding DataContext.RemoveUserCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+									CommandParameter="{Binding }"/>
+						</Grid>
+					</Button>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+
+		<Grid Grid.Row="2">
+			<StackPanel Orientation="Horizontal">
+				<Button Content="Отмена"
+						Command="{Binding CancelCommand}"
+						Margin="5"/>
+			</StackPanel>
+		</Grid>
+	</Grid>
+</UserControl>
