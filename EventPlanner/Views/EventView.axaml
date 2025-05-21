@@ -12,12 +12,14 @@
 				<StackPanel>
 					<TextBlock Text="Название мероприятия"/>
 					<TextBox Text="{Binding EventName}"
+							 IsEnabled="{Binding IsEventEditAllowed}"
 							 MinWidth="130"/>
 				</StackPanel>
 				<StackPanel Grid.Row="1">
 					<TextBlock Text="Описание мероприятия"/>
 					<TextBox Text="{Binding EventDesc}"
 							 MinWidth="130"
+							 IsEnabled="{Binding IsEventEditAllowed}"
 							 AcceptsReturn="True"
 							 MinHeight="120"/>
 				</StackPanel>
@@ -27,13 +29,17 @@
 				  Margin="5">
 				<StackPanel>
 					<TextBlock Text="Дата начала"/>
-					<CalendarDatePicker SelectedDate="{Binding DateStart}"/>
-					<TimePicker SelectedTime="{Binding TimeStart}"/>
+					<CalendarDatePicker SelectedDate="{Binding DateStart}"
+										IsEnabled="{Binding IsEventEditAllowed}"/>
+					<TimePicker SelectedTime="{Binding TimeStart}"
+								IsEnabled="{Binding IsEventEditAllowed}"/>
 				</StackPanel>
 				<StackPanel Grid.Row="1">
 					<TextBlock Text="Дата конца"/>
-					<CalendarDatePicker SelectedDate="{Binding DateEnd}"/>
-					<TimePicker SelectedTime="{Binding TimeEnd}"/>
+					<CalendarDatePicker SelectedDate="{Binding DateEnd}"
+										IsEnabled="{Binding IsEventEditAllowed}"/>
+					<TimePicker SelectedTime="{Binding TimeEnd}"
+								IsEnabled="{Binding IsEventEditAllowed}"/>
 				</StackPanel>
 			</Grid>
 			<Grid Grid.Column="2"
@@ -42,7 +48,8 @@
 				<StackPanel>
 					<TextBlock Text="Фото мероприятия"/>
 					<Button Content="Выбрать"
-							Command="{Binding SelectImageCommand}"/>
+							Command="{Binding SelectImageCommand}"
+							IsEnabled="{Binding IsEventEditAllowed}"/>
 				</StackPanel>
 				<Image Source="{Binding EventImage}"
 					   Grid.Row="1"/>
@@ -83,6 +90,7 @@
 								<Button Content="Удалить"
 										HorizontalAlignment="Right"
 										Grid.Column="4"
+										IsEnabled="{Binding DataContext.IsTaskEditAllowed, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
 										Command="{Binding DataContext.RemoveEventTaskCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
 										CommandParameter="{Binding }"/>
 							</Grid>
@@ -99,12 +107,13 @@
 						Margin="5"/>
 				<Button Content="Сохранить" 
 						Command="{Binding SaveCommand}"
+						IsEnabled="{Binding IsEventEditAllowed}"
 						Margin="5"/>
 			</StackPanel>
 
 			<Button Content="Добавить задание"
 					Command="{Binding AddEventTaskCommand}"
-					IsEnabled="{Binding IsAddTaskEnabled}"
+					IsEnabled="{Binding IsTaskEditAllowed}"
 					HorizontalAlignment="Right"
 					Margin="5"/>
 		</Grid>

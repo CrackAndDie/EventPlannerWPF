@@ -12,6 +12,7 @@ namespace EventPlanner.ViewModels
         public OrganizationViewModel()
         {
             AddCommand = ReactiveCommand.Create(OnAddCommand);
+            CancelCommand = ReactiveCommand.Create(OnCancelCommand);
         }
 
         async private void OnAddCommand()
@@ -33,11 +34,20 @@ namespace EventPlanner.ViewModels
                     ButtonEnum.Ok);
 
             await box.ShowAsync();
+
+            // go back
+            OnCancelCommand();
+        }
+
+        private void OnCancelCommand()
+        {
             App.CurrentWindowViewModel.ChangeView(new MainView());
         }
 
         [Reactive]
         public ICommand AddCommand { get; set; }
+        [Reactive]
+        public ICommand CancelCommand { get; set; }
         [Reactive]
         public bool IsErrorTextVisible { get; set; }
         [Reactive]

@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="EventPlanner.AllUsersView">
-	<Grid RowDefinitions="Auto,*,Auto">
+	<Grid RowDefinitions="Auto,*,Auto"
+		  Margin="5">
 		<Button Content="Добавить пользователя"
+				IsVisible="{Binding IsRemoveEnabled}"
 				Command="{Binding AddUserCommand}"/>
 		<ItemsControl ItemsSource="{Binding AllUsers}"
 					  Grid.Row="1">

@@ -31,7 +31,13 @@ namespace EventPlanner.ViewModels
             RemoveEventTaskCommand = ReactiveCommand.Create<EventTaskDTO>(OnRemoveEventTaskCommand);
             AddEventTaskCommand = ReactiveCommand.Create(OnAddEventTaskCommand);
 
-            IsAddTaskEnabled = theEvent != null; // allow add only for existing
+            IsTaskEditAllowed = (theEvent != null) && // allow add only for existing
+                ((App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Admin) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Director) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.TaskManager));
+            IsEventEditAllowed = (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Admin) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Director) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.EventManager);
 
             _currentEvent = theEvent;
             _currentView = theView;
@@ -206,7 +212,9 @@ namespace EventPlanner.ViewModels
         public Bitmap EventImage { get; set; }
 
         [Reactive]
-        public bool IsAddTaskEnabled { get; set; }
+        public bool IsTaskEditAllowed { get; set; }
+        [Reactive]
+        public bool IsEventEditAllowed { get; set; }
 
         public ObservableCollection<EventTaskDTO> AllEventTasks { get; set; } = new ObservableCollection<EventTaskDTO>();
 

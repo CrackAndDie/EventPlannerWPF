@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using DynamicData;
 using EventPlanner.Entities;
@@ -32,7 +33,9 @@ namespace EventPlanner.ViewModels
 
         private void OnAddUserCommand()
         {
-
+            var theView = new UserView();
+            theView.DataContext = new UserViewModel(_currentView, null);
+            App.CurrentWindowViewModel.ChangeView(theView);
         }
 
         private void OnRemoveUserCommand(UserDTO user)
@@ -50,7 +53,9 @@ namespace EventPlanner.ViewModels
             }
             else
             {
-
+                var theView = new UserView();
+                theView.DataContext = new UserViewModel(_currentView, user.OriginalUser);
+                App.CurrentWindowViewModel.ChangeView(theView);
             }
         }
 
@@ -68,7 +73,24 @@ namespace EventPlanner.ViewModels
 
         public void UpdateUsers()
         {
+            AllUsers.Clear();
 
+            var users = App.DbContext.Users.ToList();
+            var usersDto = users.Select(x => new UserDTO()
+            {
+                FullName = x.FullName,
+                Role = x.GetRole(App.DbContext).Name,
+                OriginalUser = x,
+            });
+            if (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Admin)
+            {
+                AllUsers.AddRange(usersDto);
+            }
+            else
+            {
+                usersDto = usersDto.Where(x => x.OriginalUser.OrganizationId == App.CurrentUser.OrganizationId);
+                AllUsers.AddRange(usersDto);
+            }
         }
 
         private EventTaskView _currentEventTaskView;

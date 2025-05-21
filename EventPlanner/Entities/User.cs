@@ -20,6 +20,11 @@ namespace EventPlanner.Entities
             return manager.Roles.ToList().FirstOrDefault(x => x.Id == RoleId);
         }
 
+        public RoleEnum GetRoleEnum(DbContextManager manager)
+        {
+            return (RoleEnum)manager.Roles.ToList().FirstOrDefault(x => x.Id == RoleId).Id;
+        }
+
         public Organization GetOrg(DbContextManager manager)
         {
             return manager.Organizations.ToList().FirstOrDefault(x => x.Id == OrganizationId);

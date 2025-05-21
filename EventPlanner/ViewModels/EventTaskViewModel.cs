@@ -17,9 +17,18 @@ namespace EventPlanner.ViewModels
     {
         public EventTaskViewModel(EventTask theEventTask, EventTaskView eventTaskView, EventView eventView, Event theEvent)
         {
+            AddUserCommand = ReactiveCommand.Create(OnAddUserCommand);
             RemoveUserCommand = ReactiveCommand.Create<UserDTO>(OnRemoveUserCommand);
             SaveCommand = ReactiveCommand.Create(OnSaveCommand);
             CancelCommand = ReactiveCommand.Create(OnCancelCommand);
+
+            IsTaskEditAllowed = (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Admin) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Director) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.TaskManager);
+            IsUsersEditAllowed = (theEventTask != null) && // allow add only for existing
+                ((App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Admin) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Director) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.StaffManager));
 
             _currentEventTask = theEventTask;
             _currentEventView = eventView;
@@ -42,7 +51,7 @@ namespace EventPlanner.ViewModels
                 UpdateUsers();
             }
 
-            AllStatuses.AddRange(App.DbContext.TaskStates);
+            AllStatuses.AddRange(App.DbContext.TaskStates.ToList());
         }
 
         async private void OnSaveCommand()
@@ -104,23 +113,55 @@ namespace EventPlanner.ViewModels
             App.CurrentWindowViewModel.ChangeView(_currentEventView);
         }
 
-        private void OnRemoveUserCommand(UserDTO user)
+        async private void OnRemoveUserCommand(UserDTO user)
         {
-            
+            var entry = App.DbContext.UserEventTasks.FirstOrDefault(x => x.UserId == user.OriginalUser.Id && x.EventTaskId == _currentEventTask.Id);
+            if (entry != null)
+            {
+                var box2 = MessageBoxManager
+                    .GetMessageBoxStandard("Удаление", "Удалить?",
+                    ButtonEnum.YesNo);
+                var result = await box2.ShowAsync();
+
+                if (result == ButtonResult.Yes)
+                {
+                    App.DbContext.UserEventTasks.Remove(entry);
+                    App.DbContext.SaveChanges();
+                    UpdateUsers();
+                }
+            }
         }
 
         public void OnAddUserCommand()
         {
+            var eventTaskUsers = App.DbContext.Users.ToList();
+            var userTasks = App.DbContext.UserEventTasks.ToList();
+            var userIds = userTasks.Where(x => x.EventTaskId == _currentEventTask.Id).Select(x => x.UserId).ToList();
+            eventTaskUsers = eventTaskUsers.Where(x => !userIds.Contains(x.Id) && x.OrganizationId == App.CurrentUser.OrganizationId).ToList();
 
+            var usersDto = eventTaskUsers.Select(x => new UserDTO()
+            {
+                FullName = x.FullName,
+                Role = x.GetRole(App.DbContext).Name,
+                OriginalUser = x,
+            }).ToList();
+
+            var theView = new AllUsersView();
+            theView.DataContext = new AllUsersViewModel(theView, _currentEventTaskView, usersDto);
+            App.CurrentWindowViewModel.ChangeView(theView);
         }
 
         public void AddUserCallback(UserDTO user)
         {
-
+            var userEventTask = new UserEventTask() { UserId = user.OriginalUser.Id, EventTaskId = _currentEventTask.Id };
+            App.DbContext.UserEventTasks.Add(userEventTask);
+            App.DbContext.SaveChanges();
         }
 
         public void UpdateUsers()
         {
+            AllUsers.Clear();
+
             var eventTaskUsers = App.DbContext.Users.ToList();
             var userTasks = App.DbContext.UserEventTasks.ToList();
             var userIds = userTasks.Where(x => x.EventTaskId == _currentEventTask.Id).Select(x => x.UserId).ToList();
@@ -168,6 +209,11 @@ namespace EventPlanner.ViewModels
         public TimeSpan? ActualTimeEnd { get; set; }
 
         [Reactive]
+        public bool IsTaskEditAllowed { get; set; }
+        [Reactive]
+        public bool IsUsersEditAllowed { get; set; }
+
+        [Reactive]
         public TaskState SelectedState { get; set; }
 
         public ObservableCollection<UserDTO> AllUsers { get; set; } = new ObservableCollection<UserDTO>();
@@ -177,6 +223,8 @@ namespace EventPlanner.ViewModels
         public ICommand SaveCommand { get; set; }
         [Reactive]
         public ICommand CancelCommand { get; set; }
+        [Reactive]
+        public ICommand AddUserCommand { get; set; }
         [Reactive]
         public ICommand RemoveUserCommand { get; set; }
     }

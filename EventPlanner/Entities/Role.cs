@@ -17,5 +17,6 @@ namespace EventPlanner.Entities
         EventManager =  4,
         TaskManager =   5,
         Staff =         6,
+        Admin =         7,
     }
 }

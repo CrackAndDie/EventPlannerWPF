@@ -29,6 +29,15 @@ namespace EventPlanner.ViewModels
             UserRole = $"Роль: {theUser.GetRole(App.DbContext).Name}";
             UserOrg  = $"Организация: {theUser.GetOrg(App.DbContext).Name}";
 
+            // only admin
+            IsAddOrgVisible = (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Admin);
+            IsShowUsersVisible = (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Admin) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Director) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.StaffManager);
+            IsAddEventVisible = (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Admin) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.Director) ||
+                (App.CurrentUser.GetRoleEnum(App.DbContext) == RoleEnum.EventManager);
+
             UpdateEvents();
         }
 
@@ -69,7 +78,9 @@ namespace EventPlanner.ViewModels
 
         private void OnShowUsersCommand()
         {
-
+            var theView = new AllUsersView();
+            theView.DataContext = new AllUsersViewModel(theView, null, null);
+            App.CurrentWindowViewModel.ChangeView(theView);
         }
 
         private void UpdateEvents()
@@ -95,6 +106,12 @@ namespace EventPlanner.ViewModels
         public string UserRole { get; set; }
         [Reactive]
         public string UserOrg { get; set; }
+        [Reactive]
+        public bool IsAddOrgVisible { get; set; }
+        [Reactive]
+        public bool IsShowUsersVisible { get; set; }
+        [Reactive]
+        public bool IsAddEventVisible { get; set; }
 
         public ObservableCollection<EventDTO> AllEvents { get; set; } = new ObservableCollection<EventDTO>();
 

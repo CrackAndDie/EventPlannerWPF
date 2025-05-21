@@ -21,14 +21,17 @@
 		<Grid Grid.Row="1"
 			  Margin="5">
 			<Button Content="Добавить мероприятие"
+					IsVisible="{Binding IsAddEventVisible}"
 					Command="{Binding AddEventCommand}"/>
 		
 			<StackPanel Orientation="Horizontal"
 						HorizontalAlignment="Right">
 				<Button Content="Добавить организацию"
 						Command="{Binding AddOrgCommand}"
+						IsVisible="{Binding IsAddOrgVisible}"
 						Margin="5,0"/>
 				<Button Content="Пользователи"
+						IsVisible="{Binding IsShowUsersVisible}"
 						Command="{Binding ShowUsersCommand}"/>
 			</StackPanel>
 		</Grid>
@@ -53,6 +56,7 @@
 									   Grid.Row="1"/>
 							<Button Content="Удалить"
 									Grid.Row="2"
+									IsVisible="{Binding DataContext.IsAddEventVisible, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
 									Command="{Binding DataContext.DeleteEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
 									CommandParameter="{Binding }"/>
 						</Grid>

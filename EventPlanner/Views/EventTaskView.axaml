@@ -12,11 +12,13 @@
 				<StackPanel>
 					<TextBlock Text="Название задания"/>
 					<TextBox Text="{Binding EventTaskName}"
+							 IsEnabled="{Binding IsTaskEditAllowed}"
 							 MinWidth="130"/>
 				</StackPanel>
 				<StackPanel Grid.Row="1">
 					<TextBlock Text="Описание задания"/>
 					<TextBox Text="{Binding EventTaskDesc}"
+							 IsEnabled="{Binding IsTaskEditAllowed}"
 							 MinWidth="130"
 							 AcceptsReturn="True"
 							 MinHeight="120"/>
@@ -27,13 +29,17 @@
 				  Margin="5">
 				<StackPanel>
 					<TextBlock Text="Дата начала"/>
-					<CalendarDatePicker SelectedDate="{Binding DateStart}"/>
-					<TimePicker SelectedTime="{Binding TimeStart}"/>
+					<CalendarDatePicker SelectedDate="{Binding DateStart}"
+										IsEnabled="{Binding IsTaskEditAllowed}"/>
+					<TimePicker SelectedTime="{Binding TimeStart}"
+								IsEnabled="{Binding IsTaskEditAllowed}"/>
 				</StackPanel>
 				<StackPanel Grid.Row="1">
 					<TextBlock Text="Планируемая дата конца"/>
-					<CalendarDatePicker SelectedDate="{Binding PlanDateEnd}"/>
-					<TimePicker SelectedTime="{Binding PlanTimeEnd}"/>
+					<CalendarDatePicker SelectedDate="{Binding PlanDateEnd}"
+										IsEnabled="{Binding IsTaskEditAllowed}"/>
+					<TimePicker SelectedTime="{Binding PlanTimeEnd}"
+								IsEnabled="{Binding IsTaskEditAllowed}"/>
 				</StackPanel>
 			</Grid>
 			<Grid Grid.Column="2"
@@ -41,13 +47,16 @@
 				  Margin="5">
 				<StackPanel Grid.Row="0">
 					<TextBlock Text="Реальная дата конца"/>
-					<CalendarDatePicker SelectedDate="{Binding ActualDateEnd}"/>
-					<TimePicker SelectedTime="{Binding ActualTimeEnd}"/>
+					<CalendarDatePicker SelectedDate="{Binding ActualDateEnd}"
+										IsEnabled="{Binding IsTaskEditAllowed}"/>
+					<TimePicker SelectedTime="{Binding ActualTimeEnd}"
+								IsEnabled="{Binding IsTaskEditAllowed}"/>
 				</StackPanel>
 				<StackPanel Grid.Row="1">
 					<TextBlock Text="Статус задачи"/>
 					<ComboBox ItemsSource="{Binding AllStatuses}"
 							  SelectedItem="{Binding SelectedState}"
+							  IsEnabled="{Binding IsTaskEditAllowed}"
 							  DisplayMemberBinding="{Binding Name}"
 							  Width="230"/>
 				</StackPanel>
@@ -55,8 +64,10 @@
 		</Grid>
 
 		<Grid Grid.Row="1">
+			<TextBlock Text="Персонал:"/>
 			<ItemsControl ItemsSource="{Binding AllUsers}"
-						  Grid.Row="2">
+						  Grid.Row="2"
+						  Margin="0,15,0,0">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel />
@@ -66,6 +77,8 @@
 					<DataTemplate>
 						<Border Height="50"
 								Margin="5"
+								Background="Gray"
+								CornerRadius="4"
 								HorizontalAlignment="Stretch">
 							<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*"
 								  VerticalAlignment="Center">
@@ -84,6 +97,7 @@
 								<Button Content="Удалить"
 										HorizontalAlignment="Right"
 										Grid.Column="4"
+										IsEnabled="{Binding DataContext.IsUsersEditAllowed, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
 										Command="{Binding DataContext.RemoveUserCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
 										CommandParameter="{Binding }"/>
 							</Grid>
@@ -100,8 +114,15 @@
 						Margin="5"/>
 				<Button Content="Сохранить"
 						Command="{Binding SaveCommand}"
+						IsEnabled="{Binding IsTaskEditAllowed}"
 						Margin="5"/>
 			</StackPanel>
+
+			<Button Content="Добавить персонал"
+					Command="{Binding AddUserCommand}"
+					IsEnabled="{Binding IsUsersEditAllowed}"
+					HorizontalAlignment="Right"
+					Margin="5"/>
 		</Grid>
 	</Grid>
 </UserControl>
