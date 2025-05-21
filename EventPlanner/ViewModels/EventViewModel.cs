@@ -33,6 +33,7 @@ namespace EventPlanner.ViewModels
                 TimeStart = _currentEvent.StartDate.TimeOfDay;
                 DateEnd = _currentEvent.EndDate;
                 TimeEnd = _currentEvent.EndDate.TimeOfDay;
+                EventImage = _currentEvent.Photo == null ? null : ImageConverter.ByteArrayToImage(_currentEvent.Photo);
             }
         }
 

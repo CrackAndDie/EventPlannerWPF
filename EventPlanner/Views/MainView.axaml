@@ -21,8 +21,26 @@
 					Command="{Binding AddEventCommand}"/>
 		</Grid>
 			
-		<WrapPanel Grid.Row="2">
-			
-		</WrapPanel>
+		<ItemsControl ItemsSource="{Binding AllEvents}"
+					  Grid.Row="2">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel />
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Button Width="200"
+							Height="200"
+							Command="{Binding DataContext.SelectEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+							CommandParameter="{Binding }">
+						<Grid RowDefinitions="*,Auto">
+							<Image Source="{Binding Image}"/>
+							<TextBlock Text="{Binding Name}"/>
+						</Grid>
+					</Button>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
 	</Grid>
 </UserControl>
