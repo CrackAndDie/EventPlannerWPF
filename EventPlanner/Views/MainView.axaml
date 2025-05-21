@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="EventPlanner.MainView">
-	<Grid RowDefinitions="50,*">
+	<Grid RowDefinitions="50,50,*">
 		<Grid Background="Gray">
 			<UniformGrid Rows="2" 
 						 HorizontalAlignment="Left">
@@ -16,7 +16,12 @@
 					   VerticalAlignment="Center"/>
 		</Grid>
 
-		<WrapPanel>
+		<Grid Grid.Row="1">
+			<Button Content="Добавить мероприятие"
+					Command="{Binding AddEventCommand}"/>
+		</Grid>
+			
+		<WrapPanel Grid.Row="2">
 			
 		</WrapPanel>
 	</Grid>

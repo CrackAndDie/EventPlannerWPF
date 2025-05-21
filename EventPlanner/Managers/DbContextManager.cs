@@ -1,4 +1,5 @@
-﻿using EventPlanner.Entities;
+﻿using System;
+using EventPlanner.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventPlanner.Managers
@@ -12,6 +13,11 @@ namespace EventPlanner.Managers
         public DbSet<Role> Roles { get; set; }
         public DbSet<TaskState> TaskStates { get; set; }
         public DbSet<UserEventTask> UserEventTasks { get; set; }
+
+        static DbContextManager()
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
 
         public DbContextManager()
         {
