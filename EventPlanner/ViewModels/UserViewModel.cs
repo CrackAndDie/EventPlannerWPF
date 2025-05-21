@@ -108,7 +108,7 @@ namespace EventPlanner.ViewModels
                 return false;
 
             var theUser = App.DbContext.Users.ToList().FirstOrDefault(x => x.FullName == FullName || x.PhoneNumber == PhoneNumber);
-            if (theUser != null)
+            if (theUser != null && theUser != _currentUser)
             {
                 return false;
             }

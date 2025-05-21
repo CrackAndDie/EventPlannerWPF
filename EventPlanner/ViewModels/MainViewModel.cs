@@ -23,6 +23,7 @@ namespace EventPlanner.ViewModels
             DeleteEventCommand = ReactiveCommand.Create<EventDTO>(OnDeleteEventCommand);
             AddOrgCommand = ReactiveCommand.Create(OnAddOrgCommand);
             ShowUsersCommand = ReactiveCommand.Create(OnShowUsersCommand);
+            ExitCommand = ReactiveCommand.Create(OnExitCommand);
 
             var theUser = App.CurrentUser;
             UserName = $"ФИО: {theUser.FullName}";
@@ -83,6 +84,11 @@ namespace EventPlanner.ViewModels
             App.CurrentWindowViewModel.ChangeView(theView);
         }
 
+        private void OnExitCommand()
+        {
+            App.CurrentWindowViewModel.ChangeView(new LoginView());
+        }
+
         private void UpdateEvents()
         {
             AllEvents.Clear();
@@ -125,6 +131,8 @@ namespace EventPlanner.ViewModels
         public ICommand AddOrgCommand { get; set; }
         [Reactive]
         public ICommand ShowUsersCommand { get; set; }
+        [Reactive]
+        public ICommand ExitCommand { get; set; }
     }
 
     public class EventDTO

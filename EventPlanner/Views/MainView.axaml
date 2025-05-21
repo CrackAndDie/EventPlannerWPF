@@ -12,10 +12,15 @@
 				<TextBlock Text="{Binding UserName}"/>
 				<TextBlock Text="{Binding UserRole}"/>
 			</UniformGrid>
-			<TextBlock Text="{Binding UserOrg}"
-					   Margin="5"
-					   HorizontalAlignment="Right"
-					   VerticalAlignment="Center"/>
+			<StackPanel HorizontalAlignment="Right"
+					    VerticalAlignment="Center"
+						Orientation="Horizontal">
+				<TextBlock Text="{Binding UserOrg}"
+						   Margin="5"/>
+				<Button Content="Выйти"
+						Command="{Binding ExitCommand}"
+						Margin="5"/>
+			</StackPanel>
 		</Grid>
 
 		<Grid Grid.Row="1"
