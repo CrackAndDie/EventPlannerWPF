@@ -17,12 +17,12 @@ namespace EventPlanner.Entities
 
         public Role GetRole(DbContextManager manager)
         {
-            return manager.Roles.FirstOrDefault(x => x.Id == RoleId);
+            return manager.Roles.ToList().FirstOrDefault(x => x.Id == RoleId);
         }
 
         public Organization GetOrg(DbContextManager manager)
         {
-            return manager.Organizations.FirstOrDefault(x => x.Id == OrganizationId);
+            return manager.Organizations.ToList().FirstOrDefault(x => x.Id == OrganizationId);
         }
     }
 }

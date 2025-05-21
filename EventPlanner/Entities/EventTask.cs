@@ -19,7 +19,7 @@ namespace EventPlanner.Entities
 
         public TaskState GetState(DbContextManager manager)
         {
-            return manager.TaskStates.FirstOrDefault(x => x.Id == StateId);
+            return manager.TaskStates.ToList().FirstOrDefault(x => x.Id == StateId);
         }
     }
 }

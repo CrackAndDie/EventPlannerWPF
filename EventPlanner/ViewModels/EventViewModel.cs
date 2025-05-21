@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using DynamicData;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace EventPlanner.ViewModels
 {
@@ -27,6 +28,10 @@ namespace EventPlanner.ViewModels
             SaveCommand = ReactiveCommand.Create(OnSaveCommand);
             CancelCommand = ReactiveCommand.Create(OnCancelCommand);
             SelectEventTaskCommand = ReactiveCommand.Create<EventTaskDTO>(OnSelectEventTaskCommand);
+            RemoveEventTaskCommand = ReactiveCommand.Create<EventTaskDTO>(OnRemoveEventTaskCommand);
+            AddEventTaskCommand = ReactiveCommand.Create(OnAddEventTaskCommand);
+
+            IsAddTaskEnabled = theEvent != null; // allow add only for existing
 
             _currentEvent = theEvent;
             _currentView = theView;
@@ -142,12 +147,28 @@ namespace EventPlanner.ViewModels
             App.CurrentWindowViewModel.ChangeView(theView);
         }
 
+        async private void OnRemoveEventTaskCommand(EventTaskDTO eventTask)
+        {
+            var box2 = MessageBoxManager
+                    .GetMessageBoxStandard("Удаление", "Удалить?",
+                    ButtonEnum.YesNo);
+            var result = await box2.ShowAsync();
+
+            if (result == ButtonResult.Yes)
+            {
+                App.DbContext.EventTasks.Remove(eventTask.OriginalEventTask);
+                await App.DbContext.SaveChangesAsync();
+
+                UpdateTasks();
+            }
+        }
+
         public void UpdateTasks()
         {
             AllEventTasks.Clear();
 
-            IQueryable<EventTask> eventTasks = App.DbContext.EventTasks;
-            eventTasks.Where(x => x.EventId == _currentEvent.Id);
+            var eventTasks = App.DbContext.EventTasks.ToList();
+            eventTasks = eventTasks.Where(x => x.EventId == _currentEvent.Id).ToList();
 
             AllEventTasks.AddRange(eventTasks.Select(x => new EventTaskDTO()
             {
@@ -184,6 +205,9 @@ namespace EventPlanner.ViewModels
         [Reactive]
         public Bitmap EventImage { get; set; }
 
+        [Reactive]
+        public bool IsAddTaskEnabled { get; set; }
+
         public ObservableCollection<EventTaskDTO> AllEventTasks { get; set; } = new ObservableCollection<EventTaskDTO>();
 
         [Reactive]
@@ -194,6 +218,10 @@ namespace EventPlanner.ViewModels
         public ICommand CancelCommand { get; set; }
         [Reactive]
         public ICommand SelectEventTaskCommand { get; set; }
+        [Reactive]
+        public ICommand AddEventTaskCommand { get; set; }
+        [Reactive]
+        public ICommand RemoveEventTaskCommand { get; set; }
     }
 
     public class EventTaskDTO

@@ -34,11 +34,15 @@ namespace EventPlanner.ViewModels
                 PlanDateEnd = _currentEventTask.PlanEndDate;
                 PlanTimeEnd = _currentEventTask.PlanEndDate.TimeOfDay;
 
+                SelectedState = _currentEventTask.GetState(App.DbContext);
+
                 ActualDateEnd = _currentEventTask.ActualEndDate;
                 ActualTimeEnd = _currentEventTask.ActualEndDate.HasValue ? _currentEventTask.ActualEndDate.Value.TimeOfDay : null;
 
                 UpdateUsers();
             }
+
+            AllStatuses.AddRange(App.DbContext.TaskStates);
         }
 
         async private void OnSaveCommand()
@@ -46,7 +50,7 @@ namespace EventPlanner.ViewModels
             if (!Checks())
             {
                 var box = MessageBoxManager
-                    .GetMessageBoxStandard("Ошибка", "Имя, дата/время начала, дата/время конца - обязательные поля для заполнения!",
+                    .GetMessageBoxStandard("Ошибка", "Имя, дата/время начала, дата/время конца, статус - обязательные поля для заполнения!",
                     ButtonEnum.Ok);
 
                 await box.ShowAsync();
@@ -71,6 +75,7 @@ namespace EventPlanner.ViewModels
                 var dateEndActual = new DateTime(ActualDateEnd.Value.Year, ActualDateEnd.Value.Month, ActualDateEnd.Value.Day, ActualTimeEnd.Value.Hours, ActualTimeEnd.Value.Minutes, ActualTimeEnd.Value.Seconds);
                 _currentEventTask.ActualEndDate = dateEndActual;
             }
+            _currentEventTask.StateId = SelectedState.Id;
 
             if (isAdd)
             {
@@ -88,6 +93,7 @@ namespace EventPlanner.ViewModels
                     ButtonEnum.Ok);
             await box2.ShowAsync();
 
+            (_currentEventView.DataContext as EventViewModel).UpdateTasks();
             // and go back
             OnCancelCommand();
         }
@@ -110,10 +116,10 @@ namespace EventPlanner.ViewModels
 
         public void UpdateUsers()
         {
-            IQueryable<User> eventTaskUsers = App.DbContext.Users;
-            IQueryable<UserEventTask> userTasks = App.DbContext.UserEventTasks;
-            var userIds = userTasks.Where(x => x.EventTaskId == _currentEventTask.Id).Select(x => x.UserId);
-            eventTaskUsers = eventTaskUsers.Where(x => userIds.Contains(x.Id));
+            var eventTaskUsers = App.DbContext.Users.ToList();
+            var userTasks = App.DbContext.UserEventTasks.ToList();
+            var userIds = userTasks.Where(x => x.EventTaskId == _currentEventTask.Id).Select(x => x.UserId).ToList();
+            eventTaskUsers = eventTaskUsers.Where(x => userIds.Contains(x.Id)).ToList();
 
             AllUsers.AddRange(eventTaskUsers.Select(x => new UserDTO()
             {
@@ -128,6 +134,8 @@ namespace EventPlanner.ViewModels
             if (string.IsNullOrWhiteSpace(EventTaskName))
                 return false;
             if (!DateStart.HasValue || !PlanDateEnd.HasValue || !TimeStart.HasValue || !PlanTimeEnd.HasValue)
+                return false;
+            if (SelectedState == null)
                 return false;
             return true;
         }
@@ -154,7 +162,11 @@ namespace EventPlanner.ViewModels
         [Reactive]
         public TimeSpan? ActualTimeEnd { get; set; }
 
+        [Reactive]
+        public TaskState SelectedState { get; set; }
+
         public ObservableCollection<UserDTO> AllUsers { get; set; } = new ObservableCollection<UserDTO>();
+        public ObservableCollection<TaskState> AllStatuses { get; set; } = new ObservableCollection<TaskState>();
 
         [Reactive]
         public ICommand SaveCommand { get; set; }

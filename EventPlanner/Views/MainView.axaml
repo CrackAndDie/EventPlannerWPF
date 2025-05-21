@@ -22,6 +22,15 @@
 			  Margin="5">
 			<Button Content="Добавить мероприятие"
 					Command="{Binding AddEventCommand}"/>
+		
+			<StackPanel Orientation="Horizontal"
+						HorizontalAlignment="Right">
+				<Button Content="Добавить организацию"
+						Command="{Binding AddOrgCommand}"
+						Margin="5,0"/>
+				<Button Content="Пользователи"
+						Command="{Binding ShowUsersCommand}"/>
+			</StackPanel>
 		</Grid>
 			
 		<ItemsControl ItemsSource="{Binding AllEvents}"
@@ -34,14 +43,18 @@
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
 					<Button Width="200"
-							Height="200"
+							Height="250"
 							Margin="5"
 							Command="{Binding DataContext.SelectEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
 							CommandParameter="{Binding }">
-						<Grid RowDefinitions="*,Auto">
+						<Grid RowDefinitions="*,Auto,Auto">
 							<Image Source="{Binding Image}"/>
 							<TextBlock Text="{Binding Name}"
 									   Grid.Row="1"/>
+							<Button Content="Удалить"
+									Grid.Row="2"
+									Command="{Binding DataContext.DeleteEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+									CommandParameter="{Binding }"/>
 						</Grid>
 					</Button>
 				</DataTemplate>
