@@ -5,6 +5,7 @@ using Avalonia.Media.Imaging;
 using DynamicData;
 using EventPlanner.Entities;
 using EventPlanner.Helpers;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -22,8 +23,12 @@ namespace EventPlanner.ViewModels
             UserRole = $"Роль: {theUser.GetRole(App.DbContext).Name}";
             UserOrg  = $"Организация: {theUser.GetOrg(App.DbContext).Name}";
 
+            // filtering
+            IQueryable<Event> allowedEvents = App.DbContext.Events;
+            allowedEvents = allowedEvents.Where(x => x.OrganizationId == App.CurrentUser.OrganizationId);
+
             // set up events
-            AllEvents.AddRange(App.DbContext.Events.Select(x => new EventDTO() 
+            AllEvents.AddRange(allowedEvents.Select(x => new EventDTO() 
             { 
                 Name = x.Name, 
                 Image = x.Photo == null ? null : ImageConverter.ByteArrayToImage(x.Photo), 
@@ -33,12 +38,16 @@ namespace EventPlanner.ViewModels
 
         private void OnSelectEventCommand(EventDTO eventData)
         {
-            App.CurrentWindowViewModel.ChangeView(new EventView() { DataContext = new EventViewModel(eventData.OriginalEvent) });
+            var theView = new EventView();
+            theView.DataContext = new EventViewModel(eventData.OriginalEvent, theView);
+            App.CurrentWindowViewModel.ChangeView(theView);
         }
 
         private void OnAddEventCommand()
         {
-            App.CurrentWindowViewModel.ChangeView(new EventView() { DataContext = new EventViewModel(null) });
+            var theView = new EventView();
+            theView.DataContext = new EventViewModel(null, theView);
+            App.CurrentWindowViewModel.ChangeView(theView);
         }
 
         [Reactive]
